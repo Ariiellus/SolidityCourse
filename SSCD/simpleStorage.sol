@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18; // ^ indicates the code is compatible with version 0.8.18 and any higher
 
-contract simpleStorage {
+contract SimpleStorage {
     uint256 myFavoriteNumber;
 
     // A struct is a custom data type that groups related variables
@@ -15,7 +15,7 @@ contract simpleStorage {
     // mapping is like a dictionary, pairing a string with a uint256
     mapping(string => uint256) public nameToFavoriteNumber;
 
-    function store(uint256 _favoriteNumber) public {
+    function store(uint256 _favoriteNumber) public virtual {
         myFavoriteNumber = _favoriteNumber;
 
     }
