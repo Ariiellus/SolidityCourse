@@ -9,8 +9,12 @@ Finished on: 26/11/2024
 Started on: 30/11/2024
 Finished on: 30/11/2024
 
-### Section 2: Fund Me
+### Section 3: Fund Me
 Started on: 02/12/2024
-Finished on: 
+Finished on: 31/12/2024
+
+### Section 4: AI Prompting
+Started on: 31/12/2024
+Finished on: 31/12/2024
 
 *Note*: I added notes into the Solidity code to remember what are the basics of Solidity. I will update later this section to include the deployed contracts once I do it through Foundry (next course)
