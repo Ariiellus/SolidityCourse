@@ -19,3 +19,9 @@ contract DeploySimpleStorage is Script {
 // $RPC_URL & $PRIVATE_KEY are in the .env file
 
 // NOTE: Learn how to encrypt private keys and use instead a keystore file with a password!!!
+
+// Update: 
+
+//Use cast wallet import <name> --interactive to encrypt your private key and add a password to it.
+
+//Use forge script script/DeploySimpleStorage.s.sol --rpc-url $RPC_URL --broadcast --account testKey --sender $SENDER_KEY -vvvv to deploy the contract with a encrypted private key.

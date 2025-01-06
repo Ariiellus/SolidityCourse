@@ -8,6 +8,8 @@ This part contains my progress taking the Intermediate Course "[Foundry Fundamen
 
 ### Section 1: Foundry Simple Storage
 
+Contract created and verified: [0x51d44188C52fADBeC64aE05D3647e59977318233](https://sepolia.etherscan.io/address/0x51d44188C52fADBeC64aE05D3647e59977318233#code)
+
 Started on: 01/01/2025
 Finished on:
 

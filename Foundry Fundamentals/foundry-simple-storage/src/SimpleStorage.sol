@@ -28,7 +28,7 @@ contract SimpleStorage {
     }
 
     // calldata: Temporary data passed into a function; cannot be modified.
-    // memory: Temporary data stored during function execution; modifiable.
+      // memory: Temporary data stored during function execution; modifiable.
     // storage: Data stored permanently on the blockchain.
 
     function addPerson(string memory _name, uint256 _favoriteNumber) public {
@@ -37,6 +37,10 @@ contract SimpleStorage {
 }
 
 // For deployment, use:
+
 // `forge create <contrato> --interactive --broadcast`
 // or
 // `forge create --rpc-url $RPC_URL --private-key $PRIVATE_KEY <contrato> broadcast`
+
+// For verification, use:
+// `forge verify-contract <contract_address> SimpleStorage --chain-id <chain_id>`
