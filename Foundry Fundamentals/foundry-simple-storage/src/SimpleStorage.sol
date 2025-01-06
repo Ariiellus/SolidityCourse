@@ -35,3 +35,8 @@ contract SimpleStorage {
         listOfPeople.push(Person(_favoriteNumber, _name));
     }
 }
+
+// For deployment, use:
+// `forge create <contrato> --interactive --broadcast`
+// or
+// `forge create --rpc-url $RPC_URL --private-key $PRIVATE_KEY <contrato> broadcast`
