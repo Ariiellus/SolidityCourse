@@ -6,33 +6,48 @@ This repo contains my progress taking the different courses from [Cyfrin Updraft
 
 This part contains my progress taking the Intermediate Course "[Foundry Fundamentals](https://updraft.cyfrin.io/courses/foundry/)"
 
+### Section 2: Foundry Fund Me
+
+Started on: 15/01/2025
+
+Finished on: 
+
 ### Section 1: Foundry Simple Storage
 
 Contract created and verified: [0x51d44188C52fADBeC64aE05D3647e59977318233](https://sepolia.etherscan.io/address/0x51d44188C52fADBeC64aE05D3647e59977318233#code)
 
 Started on: 01/01/2025
-Finished on:
+
+Finished on: 15/01/2025
+
+---
 
 This part contains my progress taking the Beginner Course "[Solidity Smart Contract Development](https://updraft.cyfrin.io/courses/solidity)"
 
 ### Section 4: AI Prompting
 
 Started on: 31/12/2024
+
 Finished on: 31/12/2024
 
 ### Section 3: Fund Me
 
 Started on: 02/12/2024
+
 Finished on: 31/12/2024
 
 ### Section 2: Storage Factory
 
 Started on: 30/11/2024
+
 Finished on: 30/11/2024
 
 ### Section 1: Simple Storage
 
 Started on: 23/11/2024
+
 Finished on: 26/11/2024
+
+---
 
 *Note*: I added notes into the Solidity code to remember what are the basics of Solidity. I will update later this section to include the deployed contracts once I do it through Foundry (next course)
