@@ -64,3 +64,30 @@ $ forge --help
 $ anvil --help
 $ cast --help
 ```
+
+
+---
+
+For deployment, use:
+
+`forge create <contrato> --interactive --broadcast`
+or
+`forge create --rpc-url $RPC_URL --private-key $PRIVATE_KEY <contrato> broadcast`
+
+// For verification, use:
+// `forge verify-contract <contract_address> SimpleStorage --chain-id <chain_id>`
+
+
+Use forge script script/DeploySimpleStorage.s.sol --rpc-url $RPC_URL --broadcast --private-key $PRIVATE_KEY to deploy the contract
+
+$RPC_URL & $PRIVATE_KEY are in the .env file
+
+NOTE: Learn how to encrypt private keys and use instead a keystore file with a password!!!
+
+Update: 
+
+//Use cast wallet import <name> --interactive to encrypt your private key and add a password to it.
+
+//Use forge script script/DeploySimpleStorage.s.sol --rpc-url $RPC_URL --broadcast --account testKey --sender $SENDER_KEY -vvvv to deploy the contract with a encrypted private key.
+
+For deploy a local zksync node use: anvil-zksync
