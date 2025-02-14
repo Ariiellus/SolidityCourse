@@ -10,7 +10,12 @@ This part contains my progress taking the Intermediate Course "[Foundry Fundamen
 
 Started on: 15/01/2025
 
-Finished on: 
+Finished on:
+
+Notes: 
+Need to study more about refactoring
+- [Refactoring your test](https://updraft.cyfrin.io/courses/foundry/foundry-fund-me/refactoring-testing) 
+- [Deploy a Mock price feed](https://updraft.cyfrin.io/courses/foundry/foundry-fund-me/refactoring-helper)
 
 ### Section 1: Foundry Simple Storage
 

@@ -1,2 +1,7 @@
 # Custom Dictionary Words
+chainid
 chainlink
+funder
+funders
+mainnet
+sepolia
