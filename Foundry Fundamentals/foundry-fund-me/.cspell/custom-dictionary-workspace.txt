@@ -8,4 +8,5 @@ funders
 gasleft
 mainnet
 sepolia
+zkout
 zksync
