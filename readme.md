@@ -6,11 +6,17 @@ This repo contains my progress taking the different courses from [Cyfrin Updraft
 
 This part contains my progress taking the Intermediate Course "[Foundry Fundamentals](https://updraft.cyfrin.io/courses/foundry/)"
 
+### Section 3: Fund Me Frontend
+
+Started on:  29/02/2025
+
+Finished on: 
+
 ### Section 2: Foundry Fund Me
 
 Started on: 15/01/2025
 
-Finished on:
+Finished on: 28/02/2025
 
 Notes: 
 Need to study more about refactoring
