@@ -21,7 +21,6 @@ external
 public
 internal
 private
-
 view & pure functions
 
 Layout of the contract file:
