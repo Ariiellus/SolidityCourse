@@ -15,6 +15,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
   error Raffle_SendMoreETHToEnterRaffle();
   error Raffle_TransferFailed();
   error Raffle_RaffleNotOpen();
+  error Raffle__UpkeepNotNeeded(uint256 balance, uint256 playersLength, uint256 raffleState);
 
   /* Type Declarations */
   enum RaffleState {
@@ -40,11 +41,11 @@ contract Raffle is VRFConsumerBaseV2Plus {
   event WinnerPicked(address indexed player);
 
   constructor(
-    uint entranceFee,
-    uint interval,
+    uint256 entranceFee,
+    uint256 interval,
     address vrfCoordinator,
     bytes32 gasLane,
-    uint subscriptionId,
+    uint256 subscriptionId,
     uint32 callbackGasLimit
   ) VRFConsumerBaseV2Plus(vrfCoordinator) {
     i_entranceFee = entranceFee;
@@ -71,9 +72,26 @@ contract Raffle is VRFConsumerBaseV2Plus {
     emit RaffleEntered(msg.sender);
   }
 
-  function pickWinner() external {
-    if ((block.timestamp - s_lastTimeStamp) < i_interval) {
-      revert();
+
+
+  function checkUpkeep(bytes memory) 
+    public 
+    view 
+    returns (bool upkeepNeeded, bytes memory) 
+  {
+    bool timeHasPassed = (block.timestamp - s_lastTimeStamp) >= i_interval;
+    bool isOpen = s_RaffleState == RaffleState.OPEN;
+    bool hasBalance = address(this).balance > 0;
+    bool hasPlayers = s_players.length > 0;
+    upkeepNeeded = (timeHasPassed && isOpen && hasBalance && hasPlayers);
+    return (upkeepNeeded, "");
+  }
+
+  function performUpkeep(bytes calldata) external {
+
+    (bool upkeepNeeded, ) = checkUpkeep("");
+    if (!upkeepNeeded) {
+      revert Raffle__UpkeepNotNeeded(address(this).balance, s_players.length, uint256(s_RaffleState));
     }
 
     s_RaffleState = RaffleState.CALCULATING;
@@ -87,27 +105,27 @@ contract Raffle is VRFConsumerBaseV2Plus {
         VRFV2PlusClient.ExtraArgsV1({ nativePayment: false })
       )
     });
-
-    uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
+    s_vrfCoordinator.requestRandomWords(request);
   }
-    function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal override{
-      // Check
 
-      // Effect (Internal Contract State)
-      uint256 indexOfWinner = randomWords[0] % s_players.length;
-      address payable recentWinner = s_players[indexOfWinner];
-      s_recentWinner = recentWinner;
-      s_RaffleState = RaffleState.OPEN;
-      s_players = new address payable[](0);
-      s_lastTimeStamp = block.timestamp;
-      emit WinnerPicked(s_recentWinner);
+  function fulfillRandomWords(uint256, uint256[] calldata randomWords) internal override{
+    // Check
 
-      // Interactions (External Contracts Interaction)
-      (bool success,) = recentWinner.call{value: address(this).balance}("");
-      if (!success) {
-        revert Raffle_TransferFailed();
-      }
+    // Effect (Internal Contract State)
+    uint256 indexOfWinner = randomWords[0] % s_players.length;
+    address payable recentWinner = s_players[indexOfWinner];
+    s_recentWinner = recentWinner;
+    s_RaffleState = RaffleState.OPEN;
+    s_players = new address payable[](0);
+    s_lastTimeStamp = block.timestamp;
+    emit WinnerPicked(s_recentWinner);
+
+    // Interactions (External Contracts Interaction)
+    (bool success,) = recentWinner.call{value: address(this).balance}("");
+    if (!success) {
+      revert Raffle_TransferFailed();
     }
+  }
 
   /* Getter Function */
   function getEntranceFee() external view returns (uint) {

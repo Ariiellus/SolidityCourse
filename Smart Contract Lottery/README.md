@@ -12,3 +12,9 @@ This code is to create a proveably random smart contract lottery.
 3. Chainlink VRF should generate a provably random number.
 
 4. Chainlink Automation should trigger the lottery draw regularly.
+
+## Notes
+
+1. Helper contracts allows to select in which chain will be deployed the lottery. Right now only Anvil & Sepolia are supported.
+
+2. Chainlink VRF Mocks are configured according Anvil / Sepolia. I need to study more about Mocks.
