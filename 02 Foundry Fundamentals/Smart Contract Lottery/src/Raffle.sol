@@ -72,8 +72,6 @@ contract Raffle is VRFConsumerBaseV2Plus {
     emit RaffleEntered(msg.sender);
   }
 
-
-
   function checkUpkeep(bytes memory) 
     public 
     view 
@@ -130,5 +128,9 @@ contract Raffle is VRFConsumerBaseV2Plus {
   /* Getter Function */
   function getEntranceFee() external view returns (uint) {
     return i_entranceFee;
+  }
+
+  function getRaffleState() external view returns (RaffleState) {
+    return s_RaffleState;
   }
 }

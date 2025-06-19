@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 
 import {Script} from "forge-std/Script.sol";
 import {Raffle} from "../src/Raffle.sol";
-import {HelperConfig} from "./HelperConfig.sol";
+import {HelperConfig} from "./HelperConfig.s.sol";
 
 
 contract DeployRaffle is Script {
