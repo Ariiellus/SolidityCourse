@@ -22,6 +22,9 @@ contract RaffleTest is Test {
 
   address public PLAYER = makeAddr("player"); // testing address
   uint256 public constant STARTING_USER_BALANCE = 10 ether;
+    /* Events */
+  event RaffleEntered(address indexed player);
+  event WinnerPicked(address indexed player);
 
 
   function setUp() external {
@@ -35,11 +38,51 @@ contract RaffleTest is Test {
     gasLane = config.gasLane;
     subscriptionId = config.subscriptionId;
     callbackGasLimit = config.callbackGasLimit;
-    
+
+    vm.deal(PLAYER, STARTING_USER_BALANCE);
   }
 
   function testRaffleInitializesInOpenState() public view {
     assert(raffle.getRaffleState() == Raffle.RaffleState.OPEN); // This checks that the raffle is in the open state
 
+  }
+
+  function testRaffleRevertsWhenYouDontPayEnough() public {
+    vm.prank(PLAYER);
+    vm.expectRevert(Raffle.Raffle_SendMoreETHToEnterRaffle.selector);
+    raffle.enterRaffle();
+  }
+
+  function testRaffleRecordsPlayerWhenTheyEnter() public {
+    // Arrange
+    vm.prank(PLAYER);
+    raffle.enterRaffle{value: entranceFee}();
+    address playerRecorded = raffle.getPlayer(0);
+    assertEq(playerRecorded, PLAYER);
+  }
+
+  function testRaffleEmitsEvent() public {
+    // Arrange
+    vm.prank(PLAYER);
+    vm.expectEmit(true, false, false, false, address(raffle));
+    emit RaffleEntered(address(PLAYER));
+    raffle.enterRaffle{value: entranceFee}();
+  }
+
+  function testDontAllowPlayersToEnterWhileRaffleIsCalculating() public {
+    // Arrange
+    vm.prank(PLAYER);
+    raffle.enterRaffle{value: entranceFee}();
+    vm.warp(block.timestamp + interval + 1);
+    vm.roll(block.number + 1);
+    raffle.performUpkeep("");
+
+    // Act
+    vm.expectRevert(Raffle.Raffle_RaffleNotOpen.selector);
+    vm.prank(PLAYER);
+    raffle.enterRaffle{value: entranceFee}();
+
+    // Assert
+    assert(raffle.getRaffleState() == Raffle.RaffleState.OPEN);
   }
 }
