@@ -1,0 +1,3 @@
+[submodule "02 Foundry Fundamentals/Smart Contract Lottery/lib/solmate"]
+	path = 02 Foundry Fundamentals/Smart Contract Lottery/lib/solmate
+	url = https://github.com/transmissions11/solmate
