@@ -6,6 +6,7 @@ auto_detect_remappings = false
 remappings = [
   "@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/", 
   "forge-std/=lib/forge-std/src/", 
+  "@openzeppelin/=lib/openzeppelin-contracts/",
   "@solmate/=lib/solmate/src/",
   "ds-test/=lib/solmate/lib/ds-test/src/"
 ]
@@ -21,5 +22,8 @@ tab_width = 2
 bracket_spacing = true
 quote_style = "double"
 int_types = "short"
+
+[fuzz]
+runs = 1000
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
