@@ -10,6 +10,11 @@ remappings = [
   "ds-test/=lib/solmate/lib/ds-test/src/"
 ]
 
+fs_permissions = [
+    { access = "read", path = "./broadcast" },
+    { access = "read", path = "./reports" },
+]
+
 [fmt]
 line_length = 80
 tab_width = 2 
