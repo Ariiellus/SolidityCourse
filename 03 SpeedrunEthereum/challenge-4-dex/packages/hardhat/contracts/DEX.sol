@@ -24,7 +24,7 @@ contract DEX {
 
     /* ========== EVENTS ========== */
 
-    /**	
+    /**
      * @notice Emitted when ethToToken() swap transacted
      */
     event EthToTokenSwap(address swapper, uint256 tokenOutput, uint256 ethInput);
@@ -43,10 +43,10 @@ contract DEX {
      * @notice Emitted when liquidity removed from DEX and decreases LPT count within DEX.
      */
     event LiquidityRemoved(
-        address liquidityRemover,
-        uint256 liquidityWithdrawn,
-        uint256 tokensOutput,
-        uint256 ethOutput
+      address liquidityRemover,
+      uint256 liquidityWithdrawn,
+      uint256 tokensOutput,
+      uint256 ethOutput
     );
 
     /* ========== ERRORS ========== */
@@ -68,14 +68,14 @@ contract DEX {
      * NOTE: since ratio is 1:1, this is fine to initialize the totalLiquidity (wrt to balloons) as equal to eth balance of contract.
      */
     function init(uint256 tokens) public payable returns (uint256) {
-        require(totalLiquidity == 0, "DEX already has liquidity, no need to call this function");
-        require(token.transferFrom(msg.sender, address(this), tokens), "Transfer failed");
+      require(totalLiquidity == 0, "DEX already has liquidity, no need to call this function");
+      require(token.transferFrom(msg.sender, address(this), tokens), "Transfer failed");
 
-        totalETHLiquidity = address(this).balance;
-        totalERC20Liquidity = tokens;
-        liquidityProvidedByUser[msg.sender] = Math.sqrt(totalERC20Liquidity * totalETHLiquidity); // follows sqrt(x * y) = liquidity
-        totalLiquidity = liquidityProvidedByUser[msg.sender];
-        return totalLiquidity;
+      totalETHLiquidity = address(this).balance;
+      totalERC20Liquidity = tokens;
+      liquidityProvidedByUser[msg.sender] = Math.sqrt(totalERC20Liquidity * totalETHLiquidity); // follows sqrt(x * y) = liquidity
+      totalLiquidity = liquidityProvidedByUser[msg.sender];
+      return totalLiquidity;
     }
 
     /**
@@ -84,17 +84,17 @@ contract DEX {
      */
     function price(uint256 xInput, uint256 xReserves, uint256 yReserves) public pure returns (uint256 yOutput) {
 
-        // xReserves = the token we are swapping (the token we are "selling")
-        // yReserves = the token we are getting (the token we are "buying")
+      // xReserves = the token we are swapping (the token we are "selling")
+      // yReserves = the token we are getting (the token we are "buying")
 
-        require(xInput > 0, "Input cannot be 0");
-        require(xReserves > 0 && yReserves > 0, "Reserves cannot be 0");
+      require(xInput > 0, "Input cannot be 0");
+      require(xReserves > 0 && yReserves > 0, "Reserves cannot be 0");
 
-        uint256 fee = 30; // 0.3% fee
-        uint256 inputAfterFee = xInput * (10000 - fee) / 10000; // apply the fee to the input
-        yOutput = (inputAfterFee * yReserves / (xReserves + inputAfterFee));
+      uint256 fee = 30; // 0.3% fee
+      uint256 inputAfterFee = xInput * (10000 - fee) / 10000; // apply the fee to the input
+      yOutput = (inputAfterFee * yReserves / (xReserves + inputAfterFee));
 
-        return yOutput;
+      return yOutput;
     }
 
     /**
@@ -104,7 +104,7 @@ contract DEX {
      * NOTE: if you will be submitting the challenge make sure to implement this function as it is used in the tests.
      */
     function getLiquidity(address lp) public view returns (uint256) {
-        return liquidityProvidedByUser[lp];
+      return liquidityProvidedByUser[lp];
     }
 
     /**
@@ -115,7 +115,7 @@ contract DEX {
       uint256 ethInput = msg.value;
 
       tokenOutput = price(ethInput, totalETHLiquidity, totalERC20Liquidity); // if we use the price function with 0.3% fee
-      
+
       // update the liquidity pool
       totalETHLiquidity += ethInput;
       totalERC20Liquidity -= tokenOutput;
@@ -128,8 +128,8 @@ contract DEX {
      */
     function tokenToEth(uint256 tokenInput) public returns (uint256 ethOutput) {
       require(tokenInput > 0, "ERC20 Input cannot be 0");
-			require(tokenInput <= token.balanceOf(msg.sender), "Insufficient ERC20 balance");
-      
+      require(tokenInput <= token.balanceOf(msg.sender), "Insufficient ERC20 balance");
+
       ethOutput = price(tokenInput, totalERC20Liquidity, totalETHLiquidity);
       require(token.transferFrom(msg.sender, address(this), tokenInput), "Transfer failed"); // transfer the tokens to the DEX
 
@@ -137,7 +137,7 @@ contract DEX {
 
       totalERC20Liquidity += tokenInput;
       totalETHLiquidity -= ethOutput;
-      
+
       (bool success, ) = msg.sender.call{value: ethOutput}("");
       require(success, "ETH transfer failed");
 
@@ -151,36 +151,36 @@ contract DEX {
      * NOTE: Equal parts of both assets will be removed from the user's wallet with respect to the price outlined by the AMM.
      */
     function deposit() public payable returns (uint256 liquidityMinted) {
-			// This function only can be used after call init function, otherwise it will revert
+      // This function only can be used after call init function, otherwise it will revert
 
-			require(msg.value > 0, "Input cannot be 0");
-			// calculate the amount of tokens to deposit
-			uint256 tokenDeposit = msg.value * totalERC20Liquidity / totalETHLiquidity + 1; // +1 to avoid division by 0
+      require(msg.value > 0, "Input cannot be 0");
+      // calculate the amount of tokens to deposit
+      uint256 tokenDeposit = msg.value * totalERC20Liquidity / totalETHLiquidity + 1; // +1 to avoid division by 0
 
-			require(token.balanceOf(msg.sender) >= tokenDeposit, "Insufficient ERC20 balance");
-   	 	require(token.allowance(msg.sender, address(this)) >= tokenDeposit, "Insufficient allowance");
-    	require(token.transferFrom(msg.sender, address(this), tokenDeposit), "ERC20 transfer failed");
+      require(token.balanceOf(msg.sender) >= tokenDeposit, "Insufficient ERC20 balance");
+      require(token.allowance(msg.sender, address(this)) >= tokenDeposit, "Insufficient allowance");
+      require(token.transferFrom(msg.sender, address(this), tokenDeposit), "ERC20 transfer failed");
 
-			// store the previous liquidity values
-			uint256 prevETHLiquidity = totalETHLiquidity;
-			uint256 prevTokenLiquidity = totalERC20Liquidity;
+      // store the previous liquidity values
+      uint256 prevETHLiquidity = totalETHLiquidity;
+      uint256 prevTokenLiquidity = totalERC20Liquidity;
 
-			// update the liquidity pool values
-			uint256 ethInput = msg.value;
-			totalETHLiquidity += ethInput;
-			totalERC20Liquidity += tokenDeposit;
+      // update the liquidity pool values
+      uint256 ethInput = msg.value;
+      totalETHLiquidity += ethInput;
+      totalERC20Liquidity += tokenDeposit;
 
-			// calculate the liquidity minted, both in ETH and in ERC20 and then take the minimum of the two
-			uint256 ethLiquidityProvided = totalLiquidity * ethInput / prevETHLiquidity;
-			uint256 tokenLiquidityProvided = totalLiquidity * tokenDeposit / prevTokenLiquidity;
-			liquidityMinted = Math.min(ethLiquidityProvided, tokenLiquidityProvided);
+      // calculate the liquidity minted, both in ETH and in ERC20 and then take the minimum of the two
+      uint256 ethLiquidityProvided = totalLiquidity * ethInput / prevETHLiquidity;
+      uint256 tokenLiquidityProvided = totalLiquidity * tokenDeposit / prevTokenLiquidity;
+      liquidityMinted = Math.min(ethLiquidityProvided, tokenLiquidityProvided);
 
-			liquidityProvidedByUser[msg.sender] += liquidityMinted;
-			totalLiquidity += liquidityMinted; // total liquidity is the sum of all liquidity provided by users
+      liquidityProvidedByUser[msg.sender] += liquidityMinted;
+      totalLiquidity += liquidityMinted; // total liquidity is the sum of all liquidity provided by users
 
-	    emit LiquidityProvided(msg.sender, liquidityMinted, ethInput, tokenDeposit);
+      emit LiquidityProvided(msg.sender, liquidityMinted, ethInput, tokenDeposit);
 
-			return liquidityMinted;
+      return liquidityMinted;
     }
 
     /**
@@ -188,25 +188,25 @@ contract DEX {
      * NOTE: with this current code, the msg caller could end up getting very little back if the liquidity is super low in the pool. I guess they could see that with the UI.
      */
     function withdraw(uint256 amount) public returns (uint256 ethAmount, uint256 tokenAmount) {
-			require(amount > 0, "Amount cannot be 0");
-			require(liquidityProvidedByUser[msg.sender] >= amount, "Insufficient liquidity shares");
+      require(amount > 0, "Amount cannot be 0");
+      require(liquidityProvidedByUser[msg.sender] >= amount, "Insufficient liquidity shares");
 
-			ethAmount = totalETHLiquidity * amount / totalLiquidity;
-			tokenAmount = totalERC20Liquidity * amount / totalLiquidity;
+      ethAmount = totalETHLiquidity * amount / totalLiquidity;
+      tokenAmount = totalERC20Liquidity * amount / totalLiquidity;
 
-			require(totalETHLiquidity >= ethAmount, "Insufficient ETH liquidity");
-			require(totalERC20Liquidity >= tokenAmount, "Insufficient ERC20 liquidity");
+      require(totalETHLiquidity >= ethAmount, "Insufficient ETH liquidity");
+      require(totalERC20Liquidity >= tokenAmount, "Insufficient ERC20 liquidity");
 
-			totalETHLiquidity -= ethAmount;
-			totalERC20Liquidity -= tokenAmount;
+      totalETHLiquidity -= ethAmount;
+      totalERC20Liquidity -= tokenAmount;
 
-			liquidityProvidedByUser[msg.sender] -= amount;
-			totalLiquidity -= amount;
+      liquidityProvidedByUser[msg.sender] -= amount;
+      totalLiquidity -= amount;
 
-			token.transfer(msg.sender, tokenAmount);
-			(bool success, ) = msg.sender.call{value: ethAmount}("");
-			require(success, "Liquidity Withdrawal failed");
+      token.transfer(msg.sender, tokenAmount);
+      (bool success, ) = msg.sender.call{value: ethAmount}("");
+      require(success, "Liquidity Withdrawal failed");
 
-			emit LiquidityRemoved(msg.sender, amount, tokenAmount, ethAmount);
-		}
+      emit LiquidityRemoved(msg.sender, amount, tokenAmount, ethAmount);
+    }
 }
