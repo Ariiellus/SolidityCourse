@@ -5,7 +5,6 @@ pragma solidity >=0.8.0 <0.9.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
-
 /**
  * @title DEX Template
  * @author stevepham.eth and m00npapi.eth
@@ -15,7 +14,6 @@ import "@openzeppelin/contracts/utils/math/Math.sol";
  */
 contract DEX {
     /* ========== GLOBAL VARIABLES ========== */
-
     IERC20 token; //instantiates the imported contract
     mapping(address => uint256) public liquidityProvidedByUser;
     uint256 public totalERC20Liquidity;
@@ -112,6 +110,8 @@ contract DEX {
      */
     function ethToToken() public payable returns (uint256 tokenOutput) {
       require(msg.value > 0, "ETH Input cannot be 0");
+      require(totalETHLiquidity > 0 && totalERC20Liquidity > 0, "DEX must have liquidity"); // I forgot to add this check.
+      
       uint256 ethInput = msg.value;
 
       tokenOutput = price(ethInput, totalETHLiquidity, totalERC20Liquidity); // if we use the price function with 0.3% fee
@@ -121,6 +121,8 @@ contract DEX {
       totalERC20Liquidity -= tokenOutput;
       token.transfer(msg.sender, tokenOutput);
       emit EthToTokenSwap(msg.sender, tokenOutput, ethInput);
+      
+      return tokenOutput; // I forgot to return the tokenOutput
     }
 
     /**
@@ -129,6 +131,8 @@ contract DEX {
     function tokenToEth(uint256 tokenInput) public returns (uint256 ethOutput) {
       require(tokenInput > 0, "ERC20 Input cannot be 0");
       require(tokenInput <= token.balanceOf(msg.sender), "Insufficient ERC20 balance");
+      require(token.allowance(msg.sender, address(this)) >= tokenInput, "Insufficient allowance"); // It's better to check the allowance first, otherwise the transfer will revert and the user will lose the ETH sent.
+      require(totalETHLiquidity > 0 && totalERC20Liquidity > 0, "DEX must have liquidity"); // I forgot to add this check.
 
       ethOutput = price(tokenInput, totalERC20Liquidity, totalETHLiquidity);
       require(token.transferFrom(msg.sender, address(this), tokenInput), "Transfer failed"); // transfer the tokens to the DEX
@@ -142,6 +146,7 @@ contract DEX {
       require(success, "ETH transfer failed");
 
       emit TokenToEthSwap(msg.sender, tokenInput, ethOutput);
+      return ethOutput; // I forgot to return the ethOutput
     }
 
     /**
