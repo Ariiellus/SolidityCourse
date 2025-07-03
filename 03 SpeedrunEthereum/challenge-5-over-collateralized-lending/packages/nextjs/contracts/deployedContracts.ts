@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     Corn: {
-      address: "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+      address: "0xffa7CA1AEEEbBc30C874d32C7e22F052BbEa0429",
       abi: [
         {
           inputs: [],
@@ -476,7 +476,7 @@ const deployedContracts = {
       },
     },
     CornDEX: {
-      address: "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
+      address: "0x3aAde2dCD2Df6a8cAc689EE797591b2913658659",
       abi: [
         {
           inputs: [
@@ -782,8 +782,68 @@ const deployedContracts = {
       ],
       inheritedFunctions: {},
     },
+    FlashLoanLiquidator: {
+      address: "0xB82008565FdC7e44609fA118A4a681E92581e680",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_lending",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "_cornDEX",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "_corn",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "initiator",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "userToLiquidate",
+              type: "address",
+            },
+          ],
+          name: "executeOperation",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
+      ],
+      inheritedFunctions: {},
+    },
     Lending: {
-      address: "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
+      address: "0xab16A69A5a8c12C732e0DEFF4BE56A70bb64c926",
       abi: [
         {
           inputs: [
@@ -803,12 +863,42 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "FlashLoan__FlashLoanFailed",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "Lending__BorrowingFailed",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "Lending__InsufficientLiquidatorCorn",
+          type: "error",
+        },
+        {
+          inputs: [],
           name: "Lending__InvalidAmount",
           type: "error",
         },
         {
           inputs: [],
+          name: "Lending__NotLiquidatable",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "Lending__RepayingFailed",
+          type: "error",
+        },
+        {
+          inputs: [],
           name: "Lending__TransferFailed",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "Lending__UnsafePositionRatio",
           type: "error",
         },
         {
@@ -1031,6 +1121,29 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "contract IFlashLoanRecipient",
+              name: "_recipient",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "_amount",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "_extraParam",
+              type: "address",
+            },
+          ],
+          name: "createFlashLoan",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
               internalType: "address",
               name: "user",
               type: "address",
@@ -1165,7 +1278,7 @@ const deployedContracts = {
       },
     },
     MovePrice: {
-      address: "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",
+      address: "0xE3011A37A904aB90C8881a99BD1F6E21401f1522",
       abi: [
         {
           inputs: [

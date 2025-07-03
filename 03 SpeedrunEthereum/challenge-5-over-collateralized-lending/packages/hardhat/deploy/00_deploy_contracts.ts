@@ -75,6 +75,14 @@ const deployContracts: DeployFunction = async function (hre: HardhatRuntimeEnvir
     await cornToken.approve(cornDEX.target, hre.ethers.parseEther("1000000000"));
     await cornDEX.init(hre.ethers.parseEther("1000000000"), { value: hre.ethers.parseEther("1000000") });
   }
+
+  await deploy("FlashLoanLiquidator", {
+    from: deployer,
+    args: [lending.address, cornDEX.target, cornToken.target],
+    log: true,
+    autoMine: true,
+  });
+
 };
 
 export default deployContracts;
