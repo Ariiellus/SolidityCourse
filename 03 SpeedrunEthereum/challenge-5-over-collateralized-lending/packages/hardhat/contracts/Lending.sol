@@ -207,6 +207,27 @@ contract Lending is Ownable {
 				revert FlashLoan__FlashLoanFailed();
 			}
 		}
+
+		// calculate collateral ETH value / 1.2 = max amount of 1*2
+		function getMaxBorrowAmount(uint256 collateralAmount) public view returns (uint256) {
+			if (collateralAmount == 0) return 0; 
+			uint256 collateralValue = (collateralAmount * i_cornDEX.currentPrice()) / 1e18;
+			return (collateralValue * 100) / COLLATERAL_RATIO;
+		}
+
+		function getMaxWithdrawCollateral(address user) public view returns (uint256) {
+			uint256 borrowedAmount = s_userBorrowed[user];
+            uint256 userCollateral = s_userCollateral[user];
+			if (borrowedAmount == 0) return userCollateral;
+
+			uint256 maxBorrowedAmount = getMaxBorrowAmount(userCollateral);
+            if (borrowedAmount == maxBorrowedAmount) return 0;
+
+			uint256 potentialBorrowingAmount = maxBorrowedAmount - borrowedAmount;
+			uint256 valueOfWithdraw = (potentialBorrowingAmount * 1e18) / i_cornDEX.currentPrice();
+
+			return (valueOfWithdraw * COLLATERAL_RATIO) / 100;
+		}
 }
 
 interface IFlashLoanRecipient {
