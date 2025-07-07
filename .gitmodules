@@ -3,7 +3,10 @@
 	url = https://github.com/transmissions11/solmate
 [submodule "02 Foundry Fundamentals/Smart Contract Lottery/lib/foundry-devops"]
 	path = 02 Foundry Fundamentals/Smart Contract Lottery/lib/foundry-devops
-	url = https://github.com/Cyfrin/foundry-devops
+	url = https://github.com/cyfrin/foundry-devops
 [submodule "02 Foundry Fundamentals/Smart Contract Lottery/lib/openzeppelin-contracts"]
 	path = 02 Foundry Fundamentals/Smart Contract Lottery/lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "02 Foundry Fundamentals/Smart Contract Lottery/lib/forge-std"]
+	path = 02 Foundry Fundamentals/Smart Contract Lottery/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std

@@ -4,13 +4,25 @@ This repo contains my progress taking the different courses from [Cyfrin Updraft
 
 ## Courses
 
-This part contains my progress taking the Intermediate Course "[Foundry Fundamentals](https://updraft.cyfrin.io/courses/foundry/)"
+Currently taking the [Advanced Foundry](https://updraft.cyfrin.io/courses/advanced-foundry) Course
+
+## Advanced Foundry
+
+## Section 1: Develop an ERC20 Cryptocurrency
+
+Started on: 07/07/2025
+
+Finished on:
+
+---
+
+## Foundry Fundamentals
 
 ### Section 4: Smart Contract Lottery
 
 Started on: 3/03/2025
 
-Finished on: 
+Finished on: 6/06/2025
 
 ### Section 3: Fund Me Frontend
 
@@ -24,9 +36,12 @@ Started on: 15/01/2025
 
 Finished on: 28/02/2025
 
-#### Notes: 
-Need to study more about refactoring
-- [Refactoring your test](https://updraft.cyfrin.io/courses/foundry/foundry-fund-me/refactoring-testing) 
+#### Notes
+
+Need to study more about refactoring:
+
+- [Refactoring your test](https://updraft.cyfrin.io/courses/foundry/foundry-fund-me/refactoring-testing)
+
 - [Deploy a Mock price feed](https://updraft.cyfrin.io/courses/foundry/foundry-fund-me/refactoring-helper)
 
 ### Section 1: Foundry Simple Storage

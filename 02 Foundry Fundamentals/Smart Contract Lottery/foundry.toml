@@ -6,6 +6,7 @@ auto_detect_remappings = false
 remappings = [
   "@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/", 
   "forge-std/=lib/forge-std/src/", 
+  "foundry-devops/=lib/foundry-devops/",
   "@openzeppelin/=lib/openzeppelin-contracts/",
   "@solmate/=lib/solmate/src/",
   "ds-test/=lib/solmate/lib/ds-test/src/"
