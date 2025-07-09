@@ -10,3 +10,9 @@
 [submodule "02 Foundry Fundamentals/Smart Contract Lottery/lib/forge-std"]
 	path = 02 Foundry Fundamentals/Smart Contract Lottery/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "04 Advanced Foundry/erc20/lib/forge-std"]
+	path = 04 Advanced Foundry/erc20/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "04 Advanced Foundry/erc20/lib/openzeppelin-contracts"]
+	path = 04 Advanced Foundry/erc20/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
