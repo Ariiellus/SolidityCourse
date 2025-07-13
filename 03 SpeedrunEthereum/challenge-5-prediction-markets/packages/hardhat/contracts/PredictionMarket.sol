@@ -119,10 +119,10 @@ contract PredictionMarket is Ownable {
         uint256 noTokensLocked = (initialTokenAmount * (100 - i_initialYesProbability) * i_percentageLocked * 2) / 10000;
 
         // Transfer the tokens to the contract
-        bool successYes = i_yesToken.transfer(msg.sender, yesTokensLocked);
-        bool successNo = i_noToken.transfer(msg.sender, noTokensLocked);
+        bool success1 = i_yesToken.transfer(msg.sender, yesTokensLocked);
+        bool success2 = i_noToken.transfer(msg.sender, noTokensLocked);
 
-        if (!successYes || !successNo) {
+        if (!success1 || !success2) {
             revert PredictionMarket__TokenTransferFailed();
         }
     }
@@ -137,6 +137,18 @@ contract PredictionMarket is Ownable {
      */
     function addLiquidity() external payable onlyOwner {
         //// Checkpoint 4 ////
+        if (msg.value == 0) {
+            revert PredictionMarket__AmountMustBeGreaterThanZero();
+        }
+
+        s_ethCollateral += msg.value;
+
+        uint256 newMintedTokens = msg.value * PRECISION / i_initialTokenValue;
+
+        i_yesToken.mint(address(this), newMintedTokens);
+        i_noToken.mint(address(this), newMintedTokens);
+
+        emit LiquidityAdded(msg.sender, msg.value, newMintedTokens);
     }
 
     /**
@@ -146,6 +158,24 @@ contract PredictionMarket is Ownable {
      */
     function removeLiquidity(uint256 _ethToWithdraw) external onlyOwner {
         //// Checkpoint 4 ////
+        // calculate the amount of tokens to burn
+        uint256 tokensToBurn = _ethToWithdraw * PRECISION / i_initialTokenValue;
+
+        if(tokensToBurn > i_yesToken.balanceOf(address(this)) || tokensToBurn > i_noToken.balanceOf(address(this))) {
+            revert PredictionMarket__InsufficientTokenReserve(Outcome.YES, tokensToBurn);
+        }
+        
+        s_ethCollateral -= _ethToWithdraw;
+
+        i_yesToken.burn(address(this), tokensToBurn);
+        i_noToken.burn(address(this), tokensToBurn);
+
+        (bool success, ) = msg.sender.call{value: _ethToWithdraw}("");
+        if (!success) {
+            revert PredictionMarket__ETHTransferFailed();
+        }
+        
+        emit LiquidityRemoved(msg.sender, _ethToWithdraw, tokensToBurn);
     }
 
     /**
