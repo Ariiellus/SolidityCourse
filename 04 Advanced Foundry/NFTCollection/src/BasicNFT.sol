@@ -3,6 +3,10 @@ pragma solidity ^0.8.20;
 
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
+// @title BasicNFT
+// @author @Ariiellus
+// @notice This is a basic NFT contract from the Cyfrin Advanced Foundry Course
+
 contract BasicNFT is ERC721 {
     uint256 private s_tokenCounter;
     mapping(uint256 => string) private s_tokenURIs;
