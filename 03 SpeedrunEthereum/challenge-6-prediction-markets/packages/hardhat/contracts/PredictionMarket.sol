@@ -96,7 +96,7 @@ contract PredictionMarket is Ownable {
         _;
     }
 
-    modifier onlyNotOwner() {
+    modifier notOwner() {
         if (msg.sender == owner()) {
             revert PredictionMarket__OwnerCannotCall();
         }
@@ -278,7 +278,7 @@ contract PredictionMarket is Ownable {
     function buyTokensWithETH(
         Outcome _outcome,
         uint _amountTokenToBuy
-    ) external payable predictionNotReported amountGreaterThanZero(_amountTokenToBuy) onlyNotOwner {
+    ) external payable predictionNotReported amountGreaterThanZero(_amountTokenToBuy) notOwner {
         /// Checkpoint 8 ////
         uint256 ethAmountToSend = getBuyPriceInEth(_outcome, _amountTokenToBuy);
 
@@ -313,7 +313,7 @@ contract PredictionMarket is Ownable {
     function sellTokensForEth(
         Outcome _outcome,
         uint _tradingAmount
-    ) external predictionNotReported amountGreaterThanZero(_tradingAmount) onlyNotOwner {
+    ) external predictionNotReported amountGreaterThanZero(_tradingAmount) notOwner {
         /// Checkpoint 8 ////
         uint256 ethAmountToReceive = getSellPriceInEth(_outcome, _tradingAmount);
         PredictionMarketToken tokenOwned = _outcome == Outcome.YES ? i_yesToken : i_noToken;
@@ -352,8 +352,23 @@ contract PredictionMarket is Ownable {
      * @dev Only if the prediction is resolved
      * @param _amount The amount of winning tokens to redeem
      */
-    function redeemWinningTokens(uint _amount) external {
+    function redeemWinningTokens(uint _amount) external amountGreaterThanZero(_amount) predictionReported notOwner {
         /// Checkpoint 9 ////
+        if (PredictionMarketToken(s_winningToken).balanceOf(msg.sender) < _amount) {
+            revert PredictionMarket__InsufficientWinningTokens();
+        }
+
+        uint256 amountToPayout = (_amount * i_initialTokenValue) / PRECISION;
+
+        s_ethCollateral -= amountToPayout;
+        PredictionMarketToken(s_winningToken).burn(msg.sender, _amount);
+
+        (bool success, ) = msg.sender.call{ value: amountToPayout }("");
+        if (!success) {
+            revert PredictionMarket__ETHTransferFailed();
+        }
+
+        emit WinningTokensRedeemed(msg.sender, _amount, amountToPayout);
     }
 
     /**

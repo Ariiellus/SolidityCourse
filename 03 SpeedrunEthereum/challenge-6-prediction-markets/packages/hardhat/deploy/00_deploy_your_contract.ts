@@ -24,8 +24,8 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deploy } = hre.deployments;
 
   const question = "Will the green car win the race?";
-  const initialLiquidity = ethers.parseEther("1");
-  const initialTokenValue = ethers.parseEther("0.01");
+  const initialLiquidity = ethers.parseEther("0.0001");
+  const initialTokenValue = ethers.parseEther("0.00001");
   const initialProbability = 50;
   const percentageLocked = 10;
   const liquidityProvider = deployer;
