@@ -8,11 +8,17 @@ Currently taking the [Advanced Foundry](https://updraft.cyfrin.io/courses/advanc
 
 ## Advanced Foundry
 
-## Section 2: Develop an NFT Collection
+## Section 3: DeFi Protocol
 
 Started on: 08/07/2025
 
 Finished on:
+
+## Section 2: Develop an NFT Collection
+
+Started on: 08/07/2025
+
+Finished on: 02/07¿8/2025
 
 ## Section 1: Develop an ERC20 Cryptocurrency
 
