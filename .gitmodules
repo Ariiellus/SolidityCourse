@@ -25,3 +25,9 @@
 [submodule "04 Advanced Foundry/NFTCollection/lib/foundry-devops"]
 	path = 04 Advanced Foundry/NFTCollection/lib/foundry-devops
 	url = https://github.com/ChainAccelOrg/foundry-devops
+[submodule "04 Advanced Foundry/DeFiProtocol/lib/forge-std"]
+	path = 04 Advanced Foundry/DeFiProtocol/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "04 Advanced Foundry/DeFiProtocol/lib/openzeppelin-contracts"]
+	path = 04 Advanced Foundry/DeFiProtocol/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
