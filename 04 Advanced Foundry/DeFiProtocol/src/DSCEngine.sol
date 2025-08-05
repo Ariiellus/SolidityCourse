@@ -54,7 +54,7 @@ contract DSCEngine is ReentrancyGuard {
     }
 
     // functions
-    constructor(address[] memory tokenAddresses, address[] memory priceFeedAddresses) {
+    constructor(address[] memory tokenAddresses, address[] memory priceFeedAddresses, address dscAddress) {
         if (tokenAddresses.length != priceFeedAddresses.length) {
             revert DSCEngine__MappingLengthsMustBeTheSame();
         }
@@ -62,7 +62,7 @@ contract DSCEngine is ReentrancyGuard {
             s_priceFeeds[tokenAddresses[i]] = priceFeedAddresses[i];
             s_collateralTokens.push(tokenAddresses[i]);
         }
-        i_dsc = new DecentralizedStablecoin(address(this));
+        i_dsc = DecentralizedStablecoin(dscAddress);
     }
 
     /*
