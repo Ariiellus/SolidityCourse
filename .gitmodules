@@ -31,3 +31,6 @@
 [submodule "04 Advanced Foundry/DeFiProtocol/lib/openzeppelin-contracts"]
 	path = 04 Advanced Foundry/DeFiProtocol/lib/openzeppelin-contracts
 	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "04 Advanced Foundry/DeFiProtocol/lib/chainlink-brownie-contracts"]
+	path = 04 Advanced Foundry/DeFiProtocol/lib/chainlink-brownie-contracts
+	url = https://github.com/smartcontractkit/chainlink-brownie-contracts
