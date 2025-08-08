@@ -36,7 +36,9 @@ contract DSCEngine is ReentrancyGuard {
 
     // events
     event CollateralDeposited(address indexed user, address indexed token, uint256 indexed amount);
-    event DSCMinted(address indexed user, uint256 indexed amountDSCMinted);
+    event CollateralRedeemed(address indexed user, address indexed token, uint256 indexed amount);
+    event DSCMinted(address indexed user, uint256 indexed amountDSCToMint);
+    event DSCBurned(address indexed user, uint256 indexed amountDSCToBurn);
 
     // modifiers
     modifier moreThanZero(uint256 amount) {
@@ -70,7 +72,7 @@ contract DSCEngine is ReentrancyGuard {
      * @param amountCollateral The amount of the token to deposit
      */
     function depositCollateral(address tokenCollateralAddress, uint256 amountCollateral)
-        external
+        public
         moreThanZero(amountCollateral)
         allowedCollateral(tokenCollateralAddress)
         nonReentrant
@@ -83,11 +85,7 @@ contract DSCEngine is ReentrancyGuard {
         emit CollateralDeposited(msg.sender, tokenCollateralAddress, amountCollateral);
     }
 
-    function depositCollateralAndMintDSC() external payable {}
-
-    function redeemCollateralForDSC() external {}
-
-    function mintDSC(uint256 amountDSCToMint) external moreThanZero(amountDSCToMint) {
+    function mintDSC(uint256 amountDSCToMint) public moreThanZero(amountDSCToMint) {
         s_DSCMinted[msg.sender] += amountDSCToMint;
         _healthFactorIsBroken(msg.sender);
 
@@ -99,7 +97,62 @@ contract DSCEngine is ReentrancyGuard {
         emit DSCMinted(msg.sender, amountDSCToMint);
     }
 
-    function burnDSC() external {}
+    /*
+     * @param tokenCollateralAddress The address of the token to deposit as collateral
+     * @param amountCollateral The amount of the token to deposit
+     * @param amountDSCToMint The amount of DSC to mint
+     * @notice This function combines depositCollateral and mintDSC functions
+     */
+    function depositCollateralAndMintDSC(
+        address tokenCollateralAddress,
+        uint256 amountCollateral,
+        uint256 amountDSCToMint
+    ) external {
+        depositCollateral(tokenCollateralAddress, amountCollateral);
+        mintDSC(amountDSCToMint);
+    }
+
+    function redeemCollateralForDSC(address tokenCollateralAddress, uint256 amountCollateral)
+        public
+        moreThanZero(amountCollateral)
+        nonReentrant
+    {
+        s_collateral[msg.sender][tokenCollateralAddress] -= amountCollateral;
+        bool success = IERC20(tokenCollateralAddress).transfer(msg.sender, amountCollateral);
+        if (!success) {
+            revert DSCEngine__TransferFailed();
+        }
+        _healthFactorIsBroken(msg.sender);
+
+        emit CollateralRedeemed(msg.sender, tokenCollateralAddress, amountCollateral);
+    }
+
+    function burnDSC(uint256 amountDSCToBurn) public moreThanZero(amountDSCToBurn) {
+        s_DSCMinted[msg.sender] -= amountDSCToBurn;
+        bool success = DecentralizedStablecoin(i_dsc).transferFrom(msg.sender, address(this), amountDSCToBurn);
+        if (!success) {
+            revert DSCEngine__TransferFailed();
+        }
+        i_dsc.burn(amountDSCToBurn);
+        _healthFactorIsBroken(msg.sender); // probably this will never be triggered
+
+        emit DSCBurned(msg.sender, amountDSCToBurn);
+    }
+
+    /*
+     * @param tokenCollateralAddress The address of the token to redeem as collateral
+     * @param amountCollateral The amount of the token to redeem as collateral
+     * @param amountDSCToBurn The amount of DSC to burn
+     * @notice This function combines burnDSC and redeemCollateralForDSC functions
+     */
+    function redeemCollateralForDSCAndBurnDSC(
+        address tokenCollateralAddress,
+        uint256 amountCollateral,
+        uint256 amountDSCToBurn
+    ) external moreThanZero(amountCollateral) moreThanZero(amountDSCToBurn) {
+        burnDSC(amountDSCToBurn);
+        redeemCollateralForDSC(tokenCollateralAddress, amountCollateral);
+    }
 
     function liquidate() external {}
 
