@@ -12,7 +12,14 @@ Currently taking the [Advanced Foundry](https://updraft.cyfrin.io/courses/advanc
 
 Started on: 08/07/2025
 
-Finished on:
+Finished on: 02/09/2025
+
+### Notes:
+- Need to reduce the time in each section
+- August was practically do hackathons, I should have finished this lesson first
+- The introduction to fuzz testing was smooth with a complexity of 7/10
+- I don't get some things like mocks, libraries
+- Testing need to be done carefully 
 
 ## Section 2: Develop an NFT Collection
 
