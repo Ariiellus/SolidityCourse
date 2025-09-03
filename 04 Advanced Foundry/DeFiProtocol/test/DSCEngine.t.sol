@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.26;
 
-import {Test, console2} from "forge-std/Test.sol";
+import {Test} from "forge-std/Test.sol";
 import {DecentralizedStablecoin} from "../src/DecentralizedStablecoin.sol";
 import {DSCEngine} from "../src/DSCEngine.sol";
 import {DeployDSCEngine} from "../script/DeployDSCEngine.s.sol";
