@@ -1,6 +1,10 @@
 # Compiler files
 cache/
 out/
+.github/
+
+# Dependencies
+lib/
 
 # Ignores development broadcast logs
 !/broadcast
