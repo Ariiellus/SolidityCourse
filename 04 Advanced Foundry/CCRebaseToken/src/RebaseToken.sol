@@ -21,9 +21,9 @@ contract RebaseToken is ERC20 {
     //////////////////////
     // State variables //
     //////////////////////
-    uint256 private s_interestRate = 5e10; // 50%
-    mapping(address => uint256) private s_userInterestRate;
-    mapping(address => uint256) private s_lastUpdatedTimeStamp;
+    uint256 private interestRate = 5e10; // 50%
+    mapping(address => uint256) private userInterestRate;
+    mapping(address => uint256) private lastUpdatedTimeStamp;
 
     uint256 private constant PRECISION = 1e18;
 
@@ -43,12 +43,12 @@ contract RebaseToken is ERC20 {
     //////////////////////
     function setInterestRate(uint256 _newInterestRate) external {
         // Set the interest rate
-        if (_newInterestRate < s_interestRate) {
-            revert RebaseToken_InterestRateCanOnlyDecreases(s_interestRate, _newInterestRate);
+        if (_newInterestRate < interestRate) {
+            revert RebaseToken_InterestRateCanOnlyDecreases(interestRate, _newInterestRate);
         }
 
-        s_interestRate = _newInterestRate;
-        emit RebaseToken_InterestRateSet(s_interestRate);   
+        interestRate = _newInterestRate;
+        emit RebaseToken_InterestRateSet(interestRate);   
     }
 
     /* 
@@ -58,13 +58,13 @@ contract RebaseToken is ERC20 {
     */
     function mint(address _to, uint256 _amount) external {
         _mintAccurateInterest(_to);
-        s_userInterestRate[_to] = s_interestRate;
+        userInterestRate[_to] = interestRate;
         _mint(_to, _amount);
     }
 
     function _mintAccurateInterest(address _to) internal {
 
-        s_lastUpdatedTimeStamp[_to] = block.timestamp;
+        lastUpdatedTimeStamp[_to] = block.timestamp;
     }
     
     function balanceOf(address _user) public view override returns (uint256 currentBalance) {
@@ -74,15 +74,15 @@ contract RebaseToken is ERC20 {
     } 
 
     function _calculateUserAccumulatedInterestSinceLastUpdate(address _user) internal view returns (uint256 interestEarned) {      
-        if (s_lastUpdatedTimeStamp[_user] == 0) {
+        if (lastUpdatedTimeStamp[_user] == 0) {
             return 0;
         }
         
-        uint256 timeElapsed = block.timestamp - s_lastUpdatedTimeStamp[_user];
-        uint256 userInterestRate = s_userInterestRate[_user];
+        uint256 timeElapsed = block.timestamp - lastUpdatedTimeStamp[_user];
+        uint256 baseUserInterestRate = userInterestRate[_user];
         uint256 baseBalance = super.balanceOf(_user);
         
-        interestEarned = (baseBalance * userInterestRate * timeElapsed) / (365 days * PRECISION);
+        interestEarned = (baseBalance * baseUserInterestRate * timeElapsed) / (365 days * PRECISION);
 
         return interestEarned;
     }
@@ -93,7 +93,7 @@ contract RebaseToken is ERC20 {
     * @return The interest rate for the user
     */
     function getUserInterestRate(address _user) external view returns (uint256) {
-        return s_userInterestRate[_user];
+        return userInterestRate[_user];
     }
 
     function getUserBalance(address _user) public view returns (uint256) {
