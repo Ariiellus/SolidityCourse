@@ -141,16 +141,42 @@ contract MyUSDEngine is Ownable {
     // Checkpoint 5: Accruing Interest & Managing Borrow Rates
     function setBorrowRate(uint256 newRate) external onlyRateController {
         _accrueInterest();
-        borrowRate = newRate; 
+        borrowRate = newRate;
         emit BorrowRateUpdated(borrowRate);
     }
 
     // Checkpoint 6: Repaying Debt & Withdrawing Collateral
     function repayUpTo(uint256 amount) public {
+        uint256 amountInShares = _getMyUSDToShares(amount);
+        if (amountInShares > s_userDebtShares[msg.sender]) {
+            amountInShares = s_userDebtShares[msg.sender];
+            amount = getCurrentDebtValue(msg.sender);
+        }
 
+        if (amount == 0 || i_myUSD.balanceOf(msg.sender) < amount) revert MyUSD__InsufficientBalance();
+        if (i_myUSD.allowance(msg.sender, address(this)) < amount) revert MyUSD__InsufficientAllowance();
+
+        s_userDebtShares[msg.sender] -= amountInShares;
+        totalDebtShares -= amountInShares;
+        i_myUSD.burnFrom(msg.sender, amount);
+
+        emit DebtSharesBurned(msg.sender, amount, amountInShares);
     }
 
-    function withdrawCollateral(uint256 amount) external {}
+    function withdrawCollateral(uint256 amount) external {
+        if (amount == 0) revert Engine__InvalidAmount();
+        if (s_userCollateral[msg.sender] < amount) revert Engine__InsufficientCollateral();
+        s_userCollateral[msg.sender] -= amount;
+
+        if (s_userDebtShares[msg.sender] > 0) {
+            _validatePosition(msg.sender);
+            payable(msg.sender).transfer(amount);
+        } else {
+            revert Engine__TransferFailed();
+            }
+
+        emit CollateralWithdrawn(msg.sender, amount, i_oracle.getETHMyUSDPrice());
+    }
 
     // Checkpoint 7: Liquidation - Enforcing System Stability
     function isLiquidatable(address user) public view returns (bool) {}
