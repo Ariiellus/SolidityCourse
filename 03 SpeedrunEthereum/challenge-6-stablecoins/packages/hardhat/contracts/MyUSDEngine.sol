@@ -140,6 +140,7 @@ contract MyUSDEngine is Ownable {
 
     // Checkpoint 5: Accruing Interest & Managing Borrow Rates
     function setBorrowRate(uint256 newRate) external onlyRateController {
+        if (newRate < i_staking.savingsRate()) revert Engine__InvalidBorrowRate();
         _accrueInterest();
         borrowRate = newRate;
         emit BorrowRateUpdated(borrowRate);
@@ -169,10 +170,10 @@ contract MyUSDEngine is Ownable {
         s_userCollateral[msg.sender] -= amount;
         if (s_userDebtShares[msg.sender] > 0) {
             _validatePosition(msg.sender);
-            payable(msg.sender).transfer(amount);
-        } else {
-            revert Engine__TransferFailed();
         }
+
+        (bool success,) = payable(msg.sender).call{value: amount}("");
+        if (!success) revert Engine__TransferFailed();
 
         emit CollateralWithdrawn(msg.sender, amount, i_oracle.getETHMyUSDPrice());
     }
@@ -204,8 +205,8 @@ contract MyUSDEngine is Ownable {
             amountForLiquidator = userCollateral;
         }
         s_userCollateral[user] -= amountForLiquidator;
-        
-        (bool success,) = payable(msg.sender).call{ value: amountForLiquidator}("");
+
+        (bool success, ) = payable(msg.sender).call{ value: amountForLiquidator }("");
         if (!success) revert Engine__TransferFailed();
         emit Liquidation(user, msg.sender, amountForLiquidator, userDebtValue, i_oracle.getETHMyUSDPrice());
     }
