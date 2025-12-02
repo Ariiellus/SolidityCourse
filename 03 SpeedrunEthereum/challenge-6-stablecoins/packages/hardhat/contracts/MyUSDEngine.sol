@@ -82,20 +82,61 @@ contract MyUSDEngine is Ownable {
     }
 
     // Checkpoint 3: Interest Calculation System
-    function _getCurrentExchangeRate() internal view returns (uint256) {}
+    function _getCurrentExchangeRate() internal view returns (uint256) {
+        if (totalDebtShares == 0) return debtExchangeRate;
+        uint256 timeElapsed = block.timestamp - lastUpdateTime;
+        if (timeElapsed == 0 || borrowRate == 0) return debtExchangeRate;
 
-    function _accrueInterest() internal {}
+        uint256 totalDebtValue = (totalDebtShares * debtExchangeRate) / PRECISION;
+        uint256 interest = (totalDebtValue * borrowRate * timeElapsed) / (SECONDS_PER_YEAR * 10000);
+        return debtExchangeRate + (interest * PRECISION) / totalDebtShares;
+    }
 
-    function _getMyUSDToShares(uint256 amount) internal view returns (uint256) {}
+    function _accrueInterest() internal {
+        if (totalDebtShares == 0) {
+            lastUpdateTime = block.timestamp;
+            return;
+        }
+        debtExchangeRate = _getCurrentExchangeRate();
+        lastUpdateTime = block.timestamp;
+    }
+
+    function _getMyUSDToShares(uint256 amount) internal view returns (uint256) {
+        uint256 currentExchangeRate = _getCurrentExchangeRate();
+        return (amount * PRECISION) / currentExchangeRate;
+    }
 
     // Checkpoint 4: Minting MyUSD & Position Health
-    function getCurrentDebtValue(address user) public view returns (uint256) {}
+    function getCurrentDebtValue(address user) public view returns (uint256) {
+        s_userDebtShares[user] == 0;
+        uint256 currentExchangeRate = _getCurrentExchangeRate();
+        return (s_userDebtShares[user] * currentExchangeRate) / PRECISION;
+    }
 
-    function calculatePositionRatio(address user) public view returns (uint256) {}
+    function calculatePositionRatio(address user) public view returns (uint256) {
+        uint256 debtValue = getCurrentDebtValue(user);
+        uint256 collateralValue = calculateCollateralValue(user);
+        if (debtValue == 0 && collateralValue > 0) {
+            return type(uint256).max;
+        }
+        return (collateralValue * PRECISION) / debtValue;
+    }
 
-    function _validatePosition(address user) internal view {}
+    function _validatePosition(address user) internal view {
+        uint256 positionRatio = calculatePositionRatio(user);
+        if ((positionRatio * 100) < (COLLATERAL_RATIO * PRECISION)) revert Engine__UnsafePositionRatio();
+    }
 
-    function mintMyUSD(uint256 mintAmount) public {}
+    function mintMyUSD(uint256 mintAmount) public {
+        if (mintAmount == 0) revert Engine__InvalidAmount();
+        uint256 shares = _getMyUSDToShares(mintAmount);
+        s_userDebtShares[msg.sender] += shares;
+        totalDebtShares += shares;
+        _validatePosition(msg.sender);
+        i_myUSD.mintTo(msg.sender, mintAmount);
+
+        emit DebtSharesMinted(msg.sender, mintAmount, shares);
+    }
 
     // Checkpoint 5: Accruing Interest & Managing Borrow Rates
     function setBorrowRate(uint256 newRate) external onlyRateController {}
