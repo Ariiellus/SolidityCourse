@@ -139,10 +139,16 @@ contract MyUSDEngine is Ownable {
     }
 
     // Checkpoint 5: Accruing Interest & Managing Borrow Rates
-    function setBorrowRate(uint256 newRate) external onlyRateController {}
+    function setBorrowRate(uint256 newRate) external onlyRateController {
+        _accrueInterest();
+        borrowRate = newRate; 
+        emit BorrowRateUpdated(borrowRate);
+    }
 
     // Checkpoint 6: Repaying Debt & Withdrawing Collateral
-    function repayUpTo(uint256 amount) public {}
+    function repayUpTo(uint256 amount) public {
+
+    }
 
     function withdrawCollateral(uint256 amount) external {}
 
