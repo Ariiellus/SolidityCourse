@@ -3,6 +3,9 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { Contract } from "ethers";
 import { fetchPriceFromUniswap } from "../scripts/fetchPriceFromUniswap";
 
+// Helper function to wait between deployments
+const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 /**
  * Deploys a contract named "YourContract" using the deployer account and
  * constructor arguments set to the deployer address
@@ -28,8 +31,8 @@ const deployContracts: DeployFunction = async function (hre: HardhatRuntimeEnvir
   // Add the account that you want to be the owner of your contracts when deployment is complete
   const CONTRACT_OWNER = deployer; // Change this if you want to update the rates with a different account than the deployer
 
-  // Get the deployer's current nonce
-  const deployerNonce = await hre.ethers.provider.getTransactionCount(deployer);
+  // Get the deployer's current nonce (including pending transactions)
+  const deployerNonce = await hre.ethers.provider.getTransactionCount(deployer, "latest");
 
   // Calculate future addresses based on nonce
   const futureStakingAddress = hre.ethers.getCreateAddress({
@@ -46,42 +49,58 @@ const deployContracts: DeployFunction = async function (hre: HardhatRuntimeEnvir
     from: deployer,
     args: [futureEngineAddress, futureStakingAddress],
     log: true,
+    waitConfirmations: 1,
   });
   const rateController = await hre.ethers.getContract<Contract>("RateController", deployer);
+  console.log("Waiting 5 seconds before next deployment...");
+  await wait(5000);
 
   await deploy("MyUSD", {
     from: deployer,
     args: [futureEngineAddress, futureStakingAddress],
     log: true,
+    waitConfirmations: 1,
   });
   const stablecoin = await hre.ethers.getContract<Contract>("MyUSD", deployer);
+  console.log("Waiting 5 seconds before next deployment...");
+  await wait(5000);
 
   await deploy("DEX", {
     from: deployer,
     args: [stablecoin.target],
     log: true,
+    waitConfirmations: 1,
   });
   const DEX = await hre.ethers.getContract<Contract>("DEX", deployer);
+  console.log("Waiting 5 seconds before next deployment...");
+  await wait(5000);
 
   await deploy("Oracle", {
     from: deployer,
     args: [DEX.target, ethPrice],
     log: true,
+    waitConfirmations: 1,
   });
   const oracle = await hre.ethers.getContract<Contract>("Oracle", deployer);
+  console.log("Waiting 5 seconds before next deployment...");
+  await wait(5000);
 
   await deploy("MyUSDStaking", {
     from: deployer,
     args: [stablecoin.target, futureEngineAddress, rateController.target],
     log: true,
+    waitConfirmations: 1,
   });
   const staking = await hre.ethers.getContract<Contract>("MyUSDStaking", deployer);
+  console.log("Waiting 5 seconds before next deployment...");
+  await wait(5000);
 
   // Finally deploy the engine at the predicted address
   await deploy("MyUSDEngine", {
     from: deployer,
     args: [oracle.target, stablecoin.target, staking.target, rateController.target],
     log: true,
+    waitConfirmations: 1,
   });
   const engine = await hre.ethers.getContract<Contract>("MyUSDEngine", deployer);
 
