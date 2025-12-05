@@ -21,45 +21,45 @@ const deployYourVotingContract: DeployFunction = async function (hre: HardhatRun
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  const ownerAddress = "0x0000000000000000000000000000000000000001";
+  const ownerAddress = "0x7E15A5519578490020983233eC7539D6473cA52F";
 
   /// checkpoint 6 //////
-  const verifierAddress = "0x0000000000000000000000000000000000000002"; // placeholder
-  // const verifier = await deploy("HonkVerifier", {
-  //   from: deployer,
-  //   log: true,
-  //   autoMine: true,
-  // });
+  // const verifierAddress = "0x0000000000000000000000000000000000000002"; // placeholder
+  const verifier = await deploy("HonkVerifier", {
+    from: deployer,
+    log: true,
+    autoMine: true,
+  });
 
   /// checkpoint 2 //////
-  const leanIMTAddress = "0x0000000000000000000000000000000000000003"; // placeholder
-  // const poseidon3 = await deploy("PoseidonT3", {
-  //   from: deployer,
-  //   log: true,
-  //   autoMine: true,
-  // });
+  // const leanIMTAddress = "0x0000000000000000000000000000000000000003"; // placeholder
+  const poseidon3 = await deploy("PoseidonT3", {
+    from: deployer,
+    log: true,
+    autoMine: true,
+  });
 
-  // const leanIMT = await deploy("LeanIMT", {
-  //   from: deployer,
-  //   log: true,
-  //   autoMine: true,
-  //   libraries: {
-  //     PoseidonT3: poseidon3.address,
-  //   },
-  // });
+  const leanIMT = await deploy("LeanIMT", {
+    from: deployer,
+    log: true,
+    autoMine: true,
+    libraries: {
+      PoseidonT3: poseidon3.address,
+    },
+  });
 
   await deploy("Voting", {
     from: deployer,
     // Contract constructor arguments
     /// checkpoint 6 //////
-    args: [ownerAddress, verifierAddress, "Should we build zk apps?"],
+    args: [ownerAddress, verifier.address, "Should we build zk apps?"],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
     autoMine: true,
     libraries: {
       /// checkpoint 2 //////
-      LeanIMT: leanIMTAddress,
+      LeanIMT: leanIMT.address,
     },
   });
 };

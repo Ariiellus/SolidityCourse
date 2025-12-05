@@ -4,7 +4,7 @@ pragma solidity >=0.8.0 <0.9.0;
 import { LeanIMT, LeanIMTData } from "@zk-kit/lean-imt.sol/LeanIMT.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 /// Checkpoint 6 //////
-// import {IVerifier} from "./Verifier.sol";
+import { IVerifier } from "./Verifier.sol";
 
 contract Voting is Ownable {
     using LeanIMT for LeanIMTData;
@@ -35,6 +35,8 @@ contract Voting is Ownable {
     LeanIMTData private s_tree;
 
     /// Checkpoint 6 //////
+    IVerifier public immutable i_verifier;
+    mapping(bytes32 => bool) private s_nullifierHashes;
 
     //////////////
     /// Events ///
@@ -58,6 +60,7 @@ contract Voting is Ownable {
     constructor(address _owner, address _verifier, string memory _question) Ownable(_owner) {
         s_question = _question;
         /// Checkpoint 6 //////
+        i_verifier = IVerifier(_verifier);
     }
 
     //////////////////
@@ -115,6 +118,36 @@ contract Voting is Ownable {
      */
     function vote(bytes memory _proof, bytes32 _nullifierHash, bytes32 _root, bytes32 _vote, bytes32 _depth) public {
         /// Checkpoint 6 //////
+        if (_root == bytes32(0)) {
+            revert Voting__EmptyTree();
+        }
+
+        if (_root != bytes32(s_tree.root())) {
+            revert Voting__InvalidRoot();
+        }
+
+        bytes32[] memory publicInputs = new bytes32[](4);
+        publicInputs[0] = _nullifierHash;
+        publicInputs[1] = _root;
+        publicInputs[2] = _vote;
+        publicInputs[3] = _depth;
+
+        if (!i_verifier.verify(_proof, publicInputs)) {
+            revert Voting__InvalidProof();
+        }
+
+        if (s_nullifierHashes[_nullifierHash]) {
+            revert Voting__NullifierHashAlreadyUsed(_nullifierHash);
+        }
+        s_nullifierHashes[_nullifierHash] = true;
+
+        if (_vote == bytes32(uint256(1))) {
+            s_yesVotes++;
+        } else {
+            s_noVotes++;
+        }
+
+        emit VoteCast(_nullifierHash, msg.sender, _vote == bytes32(uint256(1)), block.timestamp, s_yesVotes, s_noVotes);
     }
 
     /////////////////////////

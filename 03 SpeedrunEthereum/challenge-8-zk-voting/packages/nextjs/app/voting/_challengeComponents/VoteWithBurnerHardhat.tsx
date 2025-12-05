@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { createPublicClient, createWalletClient, getContract, http } from "viem";
+////// Checkpoint 9 //////
+import { createTestClient, parseEther } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
+import { generatePrivateKey } from "viem/accounts";
 import { hardhat } from "viem/chains";
 import { useAccount } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
@@ -14,10 +17,6 @@ import {
   loadProofFromLocalStorage,
   saveBurnerWalletToLocalStorage,
 } from "~~/utils/proofStorage";
-
-////// Checkpoint 9 //////
-// import {  parseEther, createTestClient } from "viem";
-// import { generatePrivateKey } from "viem/accounts";
 
 type LocalProofData = {
   proof: Uint8Array;
@@ -36,15 +35,21 @@ const sendVoteWithBurner = async ({
   proofData: LocalProofData;
 }): Promise<string> => {
   ////// Checkpoint 9 //////
-  console.debug(
-    "Checkpoint 9",
-    !!viemContract,
-    !!publicClient,
-    !!walletAddress,
-    !!proofData,
-    uint8ArrayToHexString(new Uint8Array(0)),
-  ); // placeholder
-  throw new Error("Checkpoint 9"); // placeholder
+  const needed = parseEther("0.01");
+  const bal = await publicClient.getBalance({ address: walletAddress });
+  if (bal < needed) {
+    const testClient = createTestClient({ chain: hardhat, mode: "hardhat", transport: http("http://localhost:8545") });
+    await testClient.setBalance({ address: walletAddress, value: needed });
+  }
+  const hash = await viemContract.write.vote([
+    uint8ArrayToHexString(proofData.proof),
+    proofData.publicInputs[0],
+    proofData.publicInputs[1],
+    proofData.publicInputs[2],
+    proofData.publicInputs[3],
+  ]);
+  const receipt = await publicClient.waitForTransactionReceipt({ hash });
+  return receipt.transactionHash;
 };
 
 export const VoteWithBurnerHardhat = ({ contractAddress }: { contractAddress?: `0x${string}` }) => {
@@ -57,7 +62,10 @@ export const VoteWithBurnerHardhat = ({ contractAddress }: { contractAddress?: `
 
   const generateBurnerWallet = () => {
     ////// Checkpoint 9 //////
-    const wallet = undefined as unknown as { address: `0x${string}`; privateKey: `0x${string}` }; // placeholder
+
+    const privateKey = generatePrivateKey();
+    const account = privateKeyToAccount(privateKey);
+    const wallet = { privateKey: privateKey as `0x${string}`, address: account.address as `0x${string}` };
 
     setBurnerWallet(wallet);
 

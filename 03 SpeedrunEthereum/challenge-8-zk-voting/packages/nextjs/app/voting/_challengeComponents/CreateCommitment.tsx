@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 ////// Checkpoint 7 //////
-// import { Fr } from "@aztec/bb.js";
-// import { toHex } from "viem";
-// import { poseidon2 } from "poseidon-lite";
+import { Fr } from "@aztec/bb.js";
+import { toHex } from "viem";
+import { poseidon2 } from "poseidon-lite";
 import { useAccount } from "wagmi";
 import { useDeployedContractInfo, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { useChallengeState } from "~~/services/store/challengeStore";
@@ -12,9 +12,14 @@ import { saveCommitmentToLocalStorage } from "~~/utils/proofStorage";
 
 const generateCommitment = async (): Promise<CommitmentData> => {
   ////// Checkpoint 7 //////
-  const commitmentHex = "0x01"; // placeholder
-  const nullifierHex = "0x02"; // placeholder
-  const secretHex = "0x03"; // placeholder
+
+  const nullifier = BigInt(Fr.random().toString()); 
+  const secret = BigInt(Fr.random().toString()); 
+  const commitment = poseidon2([nullifier, secret]);
+
+  const commitmentHex = toHex(commitment, {size: 32});
+  const nullifierHex = toHex(nullifier, {size: 32});
+  const secretHex = toHex(secret, {size: 32});
 
   return {
     commitment: commitmentHex,

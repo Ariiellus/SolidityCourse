@@ -6,8 +6,117 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   31337: {
+    HonkVerifier: {
+      address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+      abi: [
+        {
+          inputs: [],
+          name: "ProofLengthWrong",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "PublicInputsLengthWrong",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "ShpleminiFailed",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "SumcheckFailed",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes",
+              name: "proof",
+              type: "bytes",
+            },
+            {
+              internalType: "bytes32[]",
+              name: "publicInputs",
+              type: "bytes32[]",
+            },
+          ],
+          name: "verify",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 15,
+    },
+    LeanIMT: {
+      address: "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+      abi: [
+        {
+          inputs: [],
+          name: "LeafAlreadyExists",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "LeafCannotBeZero",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "LeafDoesNotExist",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "LeafGreaterThanSnarkScalarField",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "WrongSiblingNodes",
+          type: "error",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 19,
+    },
+    PoseidonT3: {
+      address: "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "uint256[2]",
+              name: "",
+              type: "uint256[2]",
+            },
+          ],
+          name: "hash",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 17,
+    },
     Voting: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      address: "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
       abi: [
         {
           inputs: [
@@ -275,6 +384,19 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "i_verifier",
+          outputs: [
+            {
+              internalType: "contract IVerifier",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "owner",
           outputs: [
             {
@@ -358,7 +480,7 @@ const deployedContracts = {
         renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
         transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
       },
-      deployedOnBlock: 1,
+      deployedOnBlock: 21,
     },
   },
 } as const;
