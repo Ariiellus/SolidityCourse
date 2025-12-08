@@ -96,7 +96,6 @@ const voteOnSepolia = async ({
 }): Promise<{ userOpHash: `0x${string}` }> => {
   if (!contractInfo && !contractAddress) throw new Error("Contract not found");
   //// Checkpoint 10 //////
-  void [encodeFunctionData, toHex, proofData, smartAccountClient]; // placeholder
   const callData = encodeFunctionData({
     abi: (contractInfo?.abi as any) || ([] as any),
     functionName: "vote",
