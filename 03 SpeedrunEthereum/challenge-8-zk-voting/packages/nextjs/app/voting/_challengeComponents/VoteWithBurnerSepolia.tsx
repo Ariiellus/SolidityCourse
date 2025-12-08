@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { createSmartAccountClient } from "permissionless";
 import { toSafeSmartAccount } from "permissionless/accounts";
 import { createPimlicoClient } from "permissionless/clients/pimlico";
+import { encode } from "punycode";
 import { createPublicClient, encodeFunctionData, http, toHex } from "viem";
 import { EntryPointVersion, entryPoint07Address } from "viem/account-abstraction";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { sepolia } from "viem/chains";
 import { useAccount } from "wagmi";
+import { getPublicClient } from "wagmi/actions";
 import { Address } from "~~/components/scaffold-eth";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { useChallengeState } from "~~/services/store/challengeStore";
@@ -25,7 +27,7 @@ const pimlicoUrl = `https://api.pimlico.io/v2/${sepolia.id}/rpc?apikey=${process
 
 const CHAIN_USED = sepolia;
 //// Checkpoint 10 //////
-// const RPC_URL = "https://ethereum-sepolia-rpc.publicnode.com";
+const RPC_URL = "https://ethereum-sepolia-rpc.publicnode.com";
 
 const pimlicoClient = createPimlicoClient({
   chain: CHAIN_USED,
@@ -43,9 +45,38 @@ const createSmartAccount = async (): Promise<{
 }> => {
   try {
     //// Checkpoint 10 //////
-    void [createSmartAccountClient, toSafeSmartAccount, createPublicClient, generatePrivateKey, privateKeyToAccount]; // placeholder
 
-    throw new Error("Checkpoint 10: implement createSmartAccount"); // placeholder
+    const privateKey = generatePrivateKey();
+    const wallet = privateKeyToAccount(privateKey);
+
+    const publicClient = createPublicClient({
+      chain: CHAIN_USED,
+      transport: http(RPC_URL),
+    });
+
+    const account = await toSafeSmartAccount({
+      client: publicClient,
+      owners: [wallet],
+      version: "1.4.1",
+    });
+
+    const smartAccountClient = createSmartAccountClient({
+      account,
+      chain: CHAIN_USED,
+      bundlerTransport: http(pimlicoUrl),
+      paymaster: pimlicoClient,
+      userOperation: {
+        estimateFeesPerGas: async () => {
+          return (await pimlicoClient.getUserOperationGasPrice()).fast;
+        },
+      },
+    });
+
+    return {
+      smartAccountClient,
+      smartAccount: account.address as `0x${string}`,
+      walletOwner: wallet.address as `0x${string}`,
+    };
   } catch (error) {
     console.error("Error creating smart account:", error);
     throw error;
@@ -66,8 +97,25 @@ const voteOnSepolia = async ({
   if (!contractInfo && !contractAddress) throw new Error("Contract not found");
   //// Checkpoint 10 //////
   void [encodeFunctionData, toHex, proofData, smartAccountClient]; // placeholder
+  const callData = encodeFunctionData({
+    abi: (contractInfo?.abi as any) || ([] as any),
+    functionName: "vote",
+    args: [
+      toHex(proofData.proof),
+      proofData.publicInputs[0], // _nullifierHash
+      proofData.publicInputs[1], // _root
+      proofData.publicInputs[2], // _vote
+      proofData.publicInputs[3], // _depth
+    ],
+  });
 
-  throw new Error("Checkpoint 10: implement voteOSepolia"); // placeholder
+  const userOpHash = await smartAccountClient.sendTransaction({
+    to: (contractAddress || contractInfo?.address) as `0x${string}`,
+    data: callData,
+    value: 0n,
+  });
+
+  return { userOpHash };
 };
 
 export const VoteWithBurnerSepolia = ({ contractAddress }: { contractAddress?: `0x${string}` }) => {
