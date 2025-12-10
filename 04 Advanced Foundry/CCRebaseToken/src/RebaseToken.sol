@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.24;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
@@ -51,7 +51,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
     //////////////////////
     function setInterestRate(uint256 _newInterestRate) external onlyOwner {
         // Set the interest rate
-        if (_newInterestRate < interestRate) {
+        if (_newInterestRate > interestRate) {
             revert RebaseToken_InterestRateCanOnlyDecreases(
                 interestRate,
                 _newInterestRate
@@ -73,10 +73,11 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      */
     function mint(
         address _to,
-        uint256 _amount
+        uint256 _amount,
+        uint256 _interestRate
     ) external onlyRole(MINT_AND_BURN_ROLE) {
         _mintAcruedInterest(_to);
-        userInterestRate[_to] = interestRate;
+        userInterestRate[_to] = _interestRate;
         _mint(_to, _amount);
     }
 
@@ -94,11 +95,24 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
 
     function _mintAcruedInterest(address _user) internal {
         uint256 previousBalance = super.balanceOf(_user);
-        uint256 currentBalance = balanceOf(_user);
-        uint256 balanceIncrease = currentBalance - previousBalance;
-
+        
+        if (lastUpdatedTimeStamp[_user] == 0) {
+            lastUpdatedTimeStamp[_user] = block.timestamp;
+            return;
+        }
+        
+        uint256 timeElapsed = block.timestamp - lastUpdatedTimeStamp[_user];
+        if (timeElapsed == 0) {
+            return;
+        }
+        
+        // Calculate interest: baseBalance * rate * time / (365 days)
+        uint256 interestEarned = (previousBalance * userInterestRate[_user] * timeElapsed) / (365 days);
+        
         lastUpdatedTimeStamp[_user] = block.timestamp;
-        _mint(_user, balanceIncrease);
+        if (interestEarned > 0) {
+            _mint(_user, interestEarned);
+        }
     }
 
     function balanceOf(

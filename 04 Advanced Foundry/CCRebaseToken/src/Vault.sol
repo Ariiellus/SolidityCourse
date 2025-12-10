@@ -17,12 +17,12 @@ contract Vault {
 
 	receive() external payable {}
 
-	function deposit() external payable {
-		// Deposit the amount into the vault
-		uint256 interestRate = I_REBASE_TOKEN.getInterestRate();
-		I_REBASE_TOKEN.mint(msg.sender, msg.value, interestRate);
-		emit Vault_Deposited(msg.sender, msg.value);
-	}
+  function deposit() external payable {
+    // Deposit the amount into the vault
+    uint256 interestRate = I_REBASE_TOKEN.getInterestRate();
+    I_REBASE_TOKEN.mint(msg.sender, msg.value, interestRate);
+    emit Vault_Deposited(msg.sender, msg.value);
+  }
 
   function withdraw(uint256 _amount) external {
     I_REBASE_TOKEN.burn(msg.sender, _amount);
