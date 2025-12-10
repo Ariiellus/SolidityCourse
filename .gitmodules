@@ -34,3 +34,12 @@
 [submodule "04 Advanced Foundry/DeFiProtocol/lib/chainlink-brownie-contracts"]
 	path = 04 Advanced Foundry/DeFiProtocol/lib/chainlink-brownie-contracts
 	url = https://github.com/smartcontractkit/chainlink-brownie-contracts
+[submodule "04 Advanced Foundry/CCRebaseToken/lib/chainlink-brownie-contracts"]
+	path = 04 Advanced Foundry/CCRebaseToken/lib/chainlink-brownie-contracts
+	url = https://github.com/smartcontractkit/chainlink-brownie-contracts.git
+[submodule "04 Advanced Foundry/CCRebaseToken/lib/forge-std"]
+	path = 04 Advanced Foundry/CCRebaseToken/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std.git
+[submodule "04 Advanced Foundry/CCRebaseToken/lib/openzeppelin-contracts"]
+	path = 04 Advanced Foundry/CCRebaseToken/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts.git

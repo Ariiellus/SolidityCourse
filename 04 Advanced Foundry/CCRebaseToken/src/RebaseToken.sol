@@ -167,7 +167,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
         }
         interestEarned = (userInterestRate[_user] * timeElapsed) + PRECISION_FACTOR;
     }
-
+ 
     /*
      * @notice Get the interest rate for a user
      * @param _user The address of the user

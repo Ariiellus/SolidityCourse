@@ -4,7 +4,7 @@ out/
 .github/
 
 # Dependencies
-lib/
+# lib/ - commented out to allow git submodules
 
 # Ignores development broadcast logs
 !/broadcast

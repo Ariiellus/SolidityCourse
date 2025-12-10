@@ -19,13 +19,19 @@ contract Vault {
 
 	function deposit() external payable {
 		// Deposit the amount into the vault
-		I_REBASE_TOKEN.mint(msg.sender, msg.value);
+		uint256 interestRate = I_REBASE_TOKEN.getInterestRate();
+		I_REBASE_TOKEN.mint(msg.sender, msg.value, interestRate);
 		emit Vault_Deposited(msg.sender, msg.value);
 	}
 
-	function withdraw(uint256 _amount) external {
-		// Withdraw the amount from the vault
-	}
+  function withdraw(uint256 _amount) external {
+    I_REBASE_TOKEN.burn(msg.sender, _amount);
+    
+    (bool success, ) = payable(msg.sender).call{value: _amount}("");
+    require(success, "ETH transfer failed");
+    
+    emit Vault_Withdrawn(msg.sender, _amount);
+  }
 
 	function getRebaseToken() external view returns (address) {
 		return address(I_REBASE_TOKEN);
