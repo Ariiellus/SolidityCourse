@@ -2,7 +2,9 @@
 src = "src"
 out = "out"
 libs = ["lib"]
-rpc_endpoints = { sepolia-eth = "", arb-sepolia = "" }
+via_ir = true
+optimizer = true
+optimizer_runs = 200
 
 remappings = [
     "forge-std/=lib/forge-std/src/",
@@ -11,3 +13,6 @@ remappings = [
     "@chainlink-local/=lib/chainlink-local/",
 ]
 
+[rpc_endpoints]
+sepolia-eth = "${SEPOLIA_RPC_URL}"
+arbitrum-sepolia = "${ARBITRUM_SEPOLIA_RPC_URL}"
