@@ -45,7 +45,7 @@ contract RebaseTokenTest is Test {
         console.log("startBalance", startBalance);
         assertEq(startBalance, amount);
         // 3. warp the time and check the balance again
-        vm.warp(startTimestamp + 1 hours);
+        vm.warp(sßtartTimestamp + 1 hours);
         console.log("block.timestamp", block.timestamp);
         uint256 middleBalance = rebaseToken.balanceOf(user);
         console.log("middleBalance", middleBalance);
