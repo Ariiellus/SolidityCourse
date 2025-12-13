@@ -15,4 +15,4 @@ remappings = [
 
 [rpc_endpoints]
 sepolia-eth = "${SEPOLIA_RPC_URL}"
-arbitrum-sepolia = "${ARBITRUM_SEPOLIA_RPC_URL}"
+arb-sepolia = "${ARBITRUM_SEPOLIA_RPC_URL}"
