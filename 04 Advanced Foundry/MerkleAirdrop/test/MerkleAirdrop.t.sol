@@ -17,7 +17,8 @@ contract MerkleAirdropTest is Test {
     bytes32[] public proof = [proofOne, proofTwo];
     address user;
     uint256 userPrivKey;
-
+    address gasPayer;
+    
     function setUp() public {
         token = new BagelToken();
         airdrop = new MerkleAirdrop(root, token);
@@ -27,8 +28,9 @@ contract MerkleAirdropTest is Test {
 
     function testUsersCanClaim() public {
         uint256 startingBalance = token.balanceOf(user);
-        vm.prank(user);
-        airdrop.claim(user, amountToClaim, proof);
+        vm.prank(gasPayer);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(userPrivKey, airdrop.getMessage(user, amountToClaim));
+        airdrop.claim(user, amountToClaim, proof, v, r, s);
 
         uint256 endingBalance = token.balanceOf(user);
         assertEq(endingBalance, startingBalance + amountToClaim);
