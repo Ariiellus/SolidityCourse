@@ -1,3 +1,48 @@
 [submodule "lib/forge-std"]
 	path = lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "02 Foundry Fundamentals/Smart Contract Lottery/lib/solmate"]
+	path = 02 Foundry Fundamentals/Smart Contract Lottery/lib/solmate
+	url = https://github.com/transmissions11/solmate
+[submodule "02 Foundry Fundamentals/Smart Contract Lottery/lib/foundry-devops"]
+	path = 02 Foundry Fundamentals/Smart Contract Lottery/lib/foundry-devops
+	url = https://github.com/cyfrin/foundry-devops
+[submodule "02 Foundry Fundamentals/Smart Contract Lottery/lib/openzeppelin-contracts"]
+	path = 02 Foundry Fundamentals/Smart Contract Lottery/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "02 Foundry Fundamentals/Smart Contract Lottery/lib/forge-std"]
+	path = 02 Foundry Fundamentals/Smart Contract Lottery/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "04 Advanced Foundry/erc20/lib/forge-std"]
+	path = 04 Advanced Foundry/erc20/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "04 Advanced Foundry/erc20/lib/openzeppelin-contracts"]
+	path = 04 Advanced Foundry/erc20/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "04 Advanced Foundry/NFTCollection/lib/forge-std"]
+	path = 04 Advanced Foundry/NFTCollection/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "04 Advanced Foundry/NFTCollection/lib/openzeppelin-contracts"]
+	path = 04 Advanced Foundry/NFTCollection/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "04 Advanced Foundry/NFTCollection/lib/foundry-devops"]
+	path = 04 Advanced Foundry/NFTCollection/lib/foundry-devops
+	url = https://github.com/ChainAccelOrg/foundry-devops
+[submodule "04 Advanced Foundry/DeFiProtocol/lib/forge-std"]
+	path = 04 Advanced Foundry/DeFiProtocol/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "04 Advanced Foundry/DeFiProtocol/lib/openzeppelin-contracts"]
+	path = 04 Advanced Foundry/DeFiProtocol/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "04 Advanced Foundry/DeFiProtocol/lib/chainlink-brownie-contracts"]
+	path = 04 Advanced Foundry/DeFiProtocol/lib/chainlink-brownie-contracts
+	url = https://github.com/smartcontractkit/chainlink-brownie-contracts
+[submodule "04 Advanced Foundry/CCRebaseToken/lib/chainlink-brownie-contracts"]
+	path = 04 Advanced Foundry/CCRebaseToken/lib/chainlink-brownie-contracts
+	url = https://github.com/smartcontractkit/chainlink-brownie-contracts.git
+[submodule "04 Advanced Foundry/CCRebaseToken/lib/forge-std"]
+	path = 04 Advanced Foundry/CCRebaseToken/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std.git
+[submodule "04 Advanced Foundry/CCRebaseToken/lib/openzeppelin-contracts"]
+	path = 04 Advanced Foundry/CCRebaseToken/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts.git

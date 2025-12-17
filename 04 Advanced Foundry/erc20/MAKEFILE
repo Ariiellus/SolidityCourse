@@ -1,0 +1,18 @@
+include .env
+
+all: clean build deploy
+
+clean:
+	rm -rf out
+
+build:
+	forge build
+
+format:
+	forge fmt
+
+deploy:
+	forge script script/DeployNewToken.s.sol:DeployNewToken --rpc-url $(RPC_URL) --account Testnet --broadcast --verify -vvvv
+
+test:
+	forge test

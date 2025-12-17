@@ -1,0 +1,12 @@
+# Custom Dictionary Words
+chainid
+chainlink
+Dotenv
+etherscan
+funder
+funders
+gasleft
+mainnet
+sepolia
+zkout
+zksync
