@@ -6,7 +6,6 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 contract BoxV2 is Initializable, UUPSUpgradeable, OwnableUpgradeable {
-    error NotOwner();
 
     uint256 internal number;
 
