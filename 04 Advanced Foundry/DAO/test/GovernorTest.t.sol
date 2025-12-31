@@ -47,50 +47,49 @@ contract GovernorTest is Test {
 
         box = new Box();
         box.transferOwnership(address(timelock));
-        
     }
 
     function testCantUpdateBoxWithoutGovernance() public {
-      vm.expectRevert();
-      box.store(1);
+        vm.expectRevert();
+        box.store(1);
     }
 
     function testCanUpdateBoxWithGovernance() public {
-      uint256 valueToStore = 12423;
-      string memory description = "Store 12423 in the box";
-      bytes memory encodedParams = abi.encodeWithSignature("store(uint256)", valueToStore);
+        uint256 valueToStore = 12423;
+        string memory description = "Store 12423 in the box";
+        bytes memory encodedParams = abi.encodeWithSignature("store(uint256)", valueToStore);
 
-      address[] memory targets = new address[](1);
-      uint256[] memory values = new uint256[](1);
-      bytes[] memory calldatas = new bytes[](1);
+        address[] memory targets = new address[](1);
+        uint256[] memory values = new uint256[](1);
+        bytes[] memory calldatas = new bytes[](1);
 
-      values[0] = 0;
-      calldatas[0] = encodedParams;
-      targets[0] = address(box);
+        values[0] = 0;
+        calldatas[0] = encodedParams;
+        targets[0] = address(box);
 
-      uint256 proposalId = governor.propose(targets, values, calldatas, description);
-      console.log("Proposal State:", uint256(governor.state(proposalId)));
+        uint256 proposalId = governor.propose(targets, values, calldatas, description);
+        console.log("Proposal State:", uint256(governor.state(proposalId)));
 
-      vm.warp(block.timestamp + VOTING_DELAY + 1);
-      vm.roll(block.number + VOTING_DELAY + 1);
+        vm.warp(block.timestamp + VOTING_DELAY + 1);
+        vm.roll(block.number + VOTING_DELAY + 1);
 
-      console.log("Proposal State:", uint256(governor.state(proposalId)));
+        console.log("Proposal State:", uint256(governor.state(proposalId)));
 
-      string memory reason = "I like this proposal";
-      uint8 voteWay = 1; // 1 = For
-      vm.prank(user);
-      governor.castVoteWithReason(proposalId, voteWay, reason);
+        string memory reason = "I like this proposal";
+        uint8 voteWay = 1; // 1 = For
+        vm.prank(user);
+        governor.castVoteWithReason(proposalId, voteWay, reason);
 
-      vm.warp(block.timestamp + VOTING_PERIOD + 1);
-      vm.roll(block.number + VOTING_PERIOD + 1);
+        vm.warp(block.timestamp + VOTING_PERIOD + 1);
+        vm.roll(block.number + VOTING_PERIOD + 1);
 
-      bytes32 descriptionHash = keccak256(abi.encodePacked(description));
-      governor.queue(targets, values, calldatas, descriptionHash);
+        bytes32 descriptionHash = keccak256(abi.encodePacked(description));
+        governor.queue(targets, values, calldatas, descriptionHash);
 
-      vm.warp(block.timestamp + MIN_DELAY + 1);
-      vm.roll(block.number + 1);
+        vm.warp(block.timestamp + MIN_DELAY + 1);
+        vm.roll(block.number + 1);
 
-      governor.execute(targets, values, calldatas, descriptionHash);
-      assertEq(box.getNumber(), valueToStore);
+        governor.execute(targets, values, calldatas, descriptionHash);
+        assertEq(box.getNumber(), valueToStore);
     }
 }
