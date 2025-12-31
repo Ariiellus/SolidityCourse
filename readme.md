@@ -1,104 +1,66 @@
-# About this repo
+## Foundry
 
-This repo contains my progress taking the different courses from [Cyfrin Updraft](https://x.com/CyfrinUpdraft)
+**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-## Courses
+Foundry consists of:
 
-Currently taking the [Advanced Foundry](https://updraft.cyfrin.io/courses/advanced-foundry) Course
+- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
+- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
+- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
 
-## Advanced Foundry
+## Documentation
 
-## Section 3: DeFi Protocol
+https://book.getfoundry.sh/
 
-Started on: 08/07/2025
+## Usage
 
-Finished on: 02/09/2025
+### Build
 
-### Notes:
-- Need to reduce the time in each section
-- August was practically do hackathons, I should have finished this lesson first
-- The introduction to fuzz testing was smooth with a complexity of 7/10
-- I don't get some things like mocks, libraries
-- Testing need to be done carefully 
+```shell
+$ forge build
+```
 
-## Section 2: Develop an NFT Collection
+### Test
 
-Started on: 08/07/2025
+```shell
+$ forge test
+```
 
-Finished on: 02/07¿8/2025
+### Format
 
-## Section 1: Develop an ERC20 Cryptocurrency
+```shell
+$ forge fmt
+```
 
-Started on: 07/07/2025
+### Gas Snapshots
 
-Finished on: 08/07/2025
+```shell
+$ forge snapshot
+```
 
----
+### Anvil
 
-## Foundry Fundamentals
+```shell
+$ anvil
+```
 
-### Section 4: Smart Contract Lottery
+### Deploy
 
-Started on: 3/03/2025
+```shell
+$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```
 
-Finished on: 6/06/2025
+### Cast
 
-### Section 3: Fund Me Frontend
+```shell
+$ cast <subcommand>
+```
 
-Started on: 29/02/2025
+### Help
 
-Finished on: 1/03/2025
-
-### Section 2: Foundry Fund Me
-
-Started on: 15/01/2025
-
-Finished on: 28/02/2025
-
-#### Notes
-
-Need to study more about refactoring:
-
-- [Refactoring your test](https://updraft.cyfrin.io/courses/foundry/foundry-fund-me/refactoring-testing)
-
-- [Deploy a Mock price feed](https://updraft.cyfrin.io/courses/foundry/foundry-fund-me/refactoring-helper)
-
-### Section 1: Foundry Simple Storage
-
-Contract created and verified: [0x51d44188C52fADBeC64aE05D3647e59977318233](https://sepolia.etherscan.io/address/0x51d44188C52fADBeC64aE05D3647e59977318233#code)
-
-Started on: 01/01/2025
-
-Finished on: 15/01/2025
-
----
-
-This part contains my progress taking the Beginner Course "[Solidity Smart Contract Development](https://updraft.cyfrin.io/courses/solidity)"
-
-### Section 4: AI Prompting
-
-Started on: 31/12/2024
-
-Finished on: 31/12/2024
-
-### Section 3: Fund Me
-
-Started on: 02/12/2024
-
-Finished on: 31/12/2024
-
-### Section 2: Storage Factory
-
-Started on: 30/11/2024
-
-Finished on: 30/11/2024
-
-### Section 1: Simple Storage
-
-Started on: 23/11/2024
-
-Finished on: 26/11/2024
-
----
-
-*Note*: I added notes into the Solidity code to remember what are the basics of Solidity. I will update later this section to include the deployed contracts once I do it through Foundry (next course)
+```shell
+$ forge --help
+$ anvil --help
+$ cast --help
+```
